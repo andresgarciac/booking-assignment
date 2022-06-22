@@ -98,7 +98,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Transactional
-    public String deleteBooking(String transactionId) {
+    public String cancelBooking(String transactionId) {
         List<Booking> bookingToCancel = bookingRepository.findByTransactionId(transactionId);
 
         if (bookingToCancel.isEmpty()) {
@@ -136,8 +136,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private String bookingDateValidations(final LocalDateTime date) {
-        if (date.isBefore(LocalDateTime.now())) {
-            throw new NotValidBookingException("The date " + date + " in the past");
+        if (date.isBefore(LocalDateTime.now()) || date.isEqual(LocalDateTime.now())) {
+            throw new NotValidBookingException("The date " + date + " is not valid to place a booking");
         }
         else if (date.isAfter(LocalDateTime.now().plusDays(daysInAdvanceToBook))) {
             throw new NotValidBookingException("The date " + date + " is " + daysInAdvanceToBook + " days after");

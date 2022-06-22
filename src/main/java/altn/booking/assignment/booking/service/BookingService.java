@@ -8,6 +8,5 @@ public interface BookingService {
     RoomAvailabilityResponse getAvailability();
     BookingResponse placeBooking(BookingRequest request);
     BookingResponse modifyBooking(BookingRequest request, String transactionId);
-
-    String deleteBooking(String transactionId);
+    String cancelBooking(String transactionId);
 }
