@@ -1,5 +1,6 @@
 package altn.booking.assignment.booking.configuration;
 
+import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,6 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Configuration
@@ -20,8 +22,11 @@ import java.util.ArrayList;
 public class SwaggerConfig {
 
     @Bean
-    public Docket bookingApi() {
+    public Docket bookingApi(TypeResolver typeResolver) {
         return new Docket(DocumentationType.SWAGGER_2)
+                .additionalModels(
+                        typeResolver.resolve(LocalDateTime.class)
+                )
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("altn.booking.assignment.booking"))
                 .paths(regex("/booking.*"))

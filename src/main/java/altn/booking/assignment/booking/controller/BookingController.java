@@ -31,7 +31,7 @@ public class BookingController {
         return ResponseEntity.ok(availability);
     }
 
-    @ApiOperation(value = "Place a booking specifying a list of dates", response = RoomAvailabilityResponse.class)
+    @ApiOperation(value = "Place a booking specifying a list of dates", response = BookingResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully booked the room"),
             @ApiResponse(code = 400, message = "Breaking the business rules about the dates or maximum of days to book ")
@@ -43,7 +43,7 @@ public class BookingController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation(value = "Modify a booking specifying a list of new dates", response = RoomAvailabilityResponse.class)
+    @ApiOperation(value = "Modify a booking specifying a list of new dates", response = BookingResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully modified the booking the room"),
             @ApiResponse(code = 400, message = "Breaking the business rules about the dates or maximum of days to book ")
@@ -57,7 +57,7 @@ public class BookingController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation(value = "Cancel a booking specifying the transactionId", response = RoomAvailabilityResponse.class)
+    @ApiOperation(value = "Cancel a booking specifying the transactionId", response = String.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully canceled the booking the room"),
             @ApiResponse(code = 404, message = "The booking wasn't found")

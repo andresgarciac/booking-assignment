@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface RoomAvailabilityRepository  extends JpaRepository<RoomAvailability, String> {
 
-    List<RoomAvailability> findByBookingReservationDateIdIsNull();
+    List<RoomAvailability> findByBookingReservationDateIdIsNullAndAvailabilityDateAfter(LocalDateTime sDate);
     Optional<RoomAvailability> findByAvailabilityDate(LocalDateTime date);
 }

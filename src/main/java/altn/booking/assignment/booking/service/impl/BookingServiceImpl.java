@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +42,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public RoomAvailabilityResponse getAvailability() {
-        List<RoomAvailability> availability = availabilityRepository.findByBookingReservationDateIdIsNull();
+        LocalDateTime today = LocalDateTime.from(LocalDate.now().atStartOfDay());
+
+        List<RoomAvailability> availability = availabilityRepository
+                .findByBookingReservationDateIdIsNullAndAvailabilityDateAfter(today);
         return RoomAvailabilityTransformer.fromRoomAvailabilityEntityList(availability);
     }
 
@@ -85,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
                     .build();
         }).collect(Collectors.toList());
 
-        List<Booking> bookedDates = bookingRepository.findByTransactionId(transactionId);
+        List<Booking> bookedDates = getBooking(transactionId);
 
         newDatesToBook(newBookingDates.stream(), bookedDates);
         oldDatesToDelete(newBookingDates, bookedDates.stream());
@@ -99,15 +103,20 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     public String cancelBooking(String transactionId) {
-        List<Booking> bookingToCancel = bookingRepository.findByTransactionId(transactionId);
-
-        if (bookingToCancel.isEmpty()) {
-            throw new BookingNotFoundException("The booking to cancel doesn't exist");
-        }
+        List<Booking> bookingToCancel = getBooking(transactionId);
 
         bookingRepository.deleteAll(bookingToCancel);
 
         return transactionId;
+    }
+
+    private List<Booking> getBooking(String transactionId) {
+        List<Booking> bookingToCancel = bookingRepository.findByTransactionId(transactionId);
+
+        if (bookingToCancel.isEmpty()) {
+            throw new BookingNotFoundException("The booking doesn't exist");
+        }
+        return bookingToCancel;
     }
 
     private void oldDatesToDelete(List<Booking> bookings, Stream<Booking> bookedDates) {
